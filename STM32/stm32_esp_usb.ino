@@ -12,7 +12,7 @@
 HardwareSerial SerialESPSTM32(PB11, PB10);  // 11是RX，10是TX
 /* 接线说明
 STM32 PB11 接收 -> ESP-Mini D1 发送
-STM32 PB10 发送 -> ESP-Mini D1 接收
+STM32 PB10 发送 -> ESP-Mini D2 接收
 */
 
 // 和 本地计算机，通过 USB 转 TTL 串口通信
@@ -60,14 +60,8 @@ void loop() {
 
         // 使用 trim() 去除多余的空白字符或换行符
         value.trim();
-
         // 打印到 PC 端
         SerialPC.println("Key: " + key + " Value: " + value);
-
-        SerialPC.print("value: ");
-        SerialPC.println(value);
-        SerialPC.print("value length: ");
-        SerialPC.println(value.length());
 
         if (value == "1") {
             SerialPC.println("value is exactly '1'");
