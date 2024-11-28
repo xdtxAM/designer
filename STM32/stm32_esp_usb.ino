@@ -64,11 +64,11 @@ void loop() {
         SerialPC.println("Key: " + key + " Value: " + value);
 
         if (value == "1") {
-            SerialPC.println("value is exactly '1'");
+            SerialPC.println("灯打开了");
             // 打开 LED 灯
             digitalWrite(LED_BUILTIN, LOW);
         } else {
-            SerialPC.println("value is NOT '1'");
+            SerialPC.println("灯关闭了");
             // 关闭 LED 灯
             digitalWrite(LED_BUILTIN, HIGH);
         }
