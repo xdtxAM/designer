@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "esp32"
+		},
+		{
+			"name": "stm32",
+			"path": "stm32"
+		},
+		{
+			"name": "stm32",
+			"path": "C:/Users/dchen/Documents/PlatformIO/Projects/stm32"
+		}
+	],
+	"settings": {}
+}
