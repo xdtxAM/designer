@@ -77,7 +77,7 @@ def generate_chars_code(chars, font_size=12):
     print("生成的代码：")
     print(final_result)
     
-    # 复制到剪贴板
+    # 复制到剪贴板1
     pyperclip.copy(final_result)
     print("\n代码已复制到剪贴板！")
 
