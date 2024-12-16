@@ -64,7 +64,7 @@ if __name__ == "__main__":
     print("MQTT 客户端已创建")
 
     # 发布消息
-    publish_message(client, {"mq135": True})
+    publish_message(client, {"test": True})
     while True:
         # 处理MQTT消息，下发的
         if not message_queue.empty():
