@@ -15,13 +15,13 @@ def send_command(serial_port, command):
     :param command: 发送的指令字符串
     """
     print(f"发送指令: {command}")
-    serial_port.write(command.encode('utf-8'))  # 转换为字节并发送
+    serial_port.write(command.encode('gb2312'))  # 转换为字节并发送，使用GB2312编码支持中文
     time.sleep(0.1)  # 等待屏幕处理
-    response = serial_port.read(100)  # 读取最多100字节返回
-    if response:
-        print(f"屏幕返回: {response.decode('utf-8', errors='ignore')}")
-    else:
-        print("屏幕无返回")
+    # response = serial_port.read(100)  # 读取最多100字节返回
+    # if response:
+    #     print(f"屏幕返回: {response.decode('utf-8', errors='ignore')}")
+    # else:
+    #     print("屏幕无返回")
 
 if __name__ == "__main__":
     try:
@@ -38,10 +38,11 @@ if __name__ == "__main__":
             print("串口已打开")
         while True:
             # 发送指令
-            send_command(ser, "SET_TXT(6,'222');\r\n")  # 设置 num0 的内容为 21，占 2 位
+            send_command(ser, "SET_TXT(8,'12.1');\r\n")
+            send_command(ser, "SET_TXT(3,'22.1');\r\n")
+            send_command(ser, "SET_TXT(5,'检测到可燃气体');\r\n")
             time.sleep(1)
-            send_command(ser, "SET_TXT(6,'111');\r\n")  # 设置 num3 的内容为 10，占 3 位
-            time.sleep(1)
+
 
     except serial.SerialException as e:
         print(f"串口异常: {e}")
