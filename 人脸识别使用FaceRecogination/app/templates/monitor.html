@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="glass-card rounded-lg p-6 border-glow">
+        <div class="flex justify-between items-center mb-6 relative z-50">
+            <h2 class="text-2xl font-bold neon-text">设备监控</h2>
+        </div>
+        
+        <!-- iframe 容器 -->
+        <div class="relative aspect-[4/3] w-full max-w-4xl mx-auto rounded-lg overflow-hidden border-2 border-cyan-500/30">
+            <iframe 
+                src="https://saas.thingscloud.xyz/thingsx/#/bj-2/91513842/device/dq5nrhm4"
+                class="absolute inset-0 w-full h-full"
+                style="pointer-events: auto;"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <!-- 提示信息 -->
+        <div class="mt-4 text-center text-gray-400 relative z-50">
+            <p class="text-sm">外部监控系统已加载</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* 自定义滚动条样式 */
+    iframe::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    iframe::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.6);
+    }
+
+    iframe::-webkit-scrollbar-thumb {
+        background: rgba(0, 255, 255, 0.3);
+        border-radius: 4px;
+    }
+
+    iframe::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 255, 255, 0.5);
+    }
+
+    /* iframe 容器样式 */
+    iframe {
+        z-index: 10;
+        pointer-events: all !important;
+    }
+
+    /* 确保导航栏在 iframe 上层 */
+    .glass-nav {
+        z-index: 1000 !important;
+    }
+
+    /* 调整内容区域的层级 */
+    .glass-card {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* 确保标题和提示信息在 iframe 上层 */
+    .glass-card > div:first-child,
+    .glass-card > div:last-child {
+        position: relative;
+        z-index: 50;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const iframe = document.querySelector('iframe');
+    
+    iframe.addEventListener('load', function() {
+        // 确保 iframe 可以接收交互
+        this.style.pointerEvents = 'all';
+        console.log('iframe loaded');
+    });
+});
+</script>
+{% endblock %} 

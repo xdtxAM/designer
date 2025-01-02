@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="glass-card rounded-lg p-6 border-glow">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold neon-text">历史记录</h2>
+            <div class="flex gap-4">
+                <button onclick="confirmDelete('today')" 
+                        class="bg-red-600/70 hover:bg-red-700/70 text-white px-4 py-2 rounded-lg transition-all duration-200 border border-red-400/30 hover-glow relative z-20">
+                    删除今日记录
+                </button>
+                <button onclick="confirmDelete('all')" 
+                        class="bg-red-700/70 hover:bg-red-800/70 text-white px-4 py-2 rounded-lg transition-all duration-200 border border-red-400/30 hover-glow relative z-20">
+                    清空所有记录
+                </button>
+            </div>
+        </div>
+        
+        <!-- 筛选表单 -->
+        <form class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4 relative z-20" method="get">
+            <div class="space-y-2">
+                <label class="block text-cyan-300">截图类型</label>
+                <select name="type" 
+                        class="w-full bg-gray-800/50 border border-cyan-500/30 rounded-lg px-3 py-2 text-gray-100 relative z-20 cursor-pointer">
+                    <option value="all" {% if capture_type == 'all' %}selected{% endif %}>全部</option>
+                    <option value="manual" {% if capture_type == 'manual' %}selected{% endif %}>手动截图</option>
+                    <option value="auto" {% if capture_type == 'auto' %}selected{% endif %}>自动抓拍</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label class="block text-cyan-300">开始日期</label>
+                <input type="date" name="date_from" 
+                       value="{{ date_from.strftime('%Y-%m-%d') if date_from else '' }}"
+                       class="w-full bg-gray-800/50 border border-cyan-500/30 rounded-lg px-3 py-2 text-gray-100 relative z-20 cursor-pointer">
+            </div>
+            <div class="space-y-2">
+                <label class="block text-cyan-300">结束日期</label>
+                <input type="date" name="date_to" 
+                       value="{{ date_to.strftime('%Y-%m-%d') if date_to else '' }}"
+                       class="w-full bg-gray-800/50 border border-cyan-500/30 rounded-lg px-3 py-2 text-gray-100 relative z-20 cursor-pointer">
+            </div>
+            <div class="flex items-end">
+                <button type="submit" 
+                        class="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-lg transition-all duration-200 border border-cyan-400/30 hover-glow relative z-20 cursor-pointer">
+                    筛选
+                </button>
+            </div>
+        </form>
+
+        <!-- 图片网格 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+            {% for record in pagination.items %}
+            <div class="glass-card rounded-lg overflow-hidden">
+                <div class="relative group">
+                    <img src="{{ url_for('static', filename='captures/' + record.image_path) }}"
+                         alt="Capture {{ record.id }}"
+                         class="w-full h-48 object-cover">
+                    <!-- 悬浮时显示的删除按钮 -->
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                        <button onclick="deleteRecord({{ record.id }})"
+                                class="bg-red-600/80 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all duration-200">
+                            删除此记录
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 relative z-10">
+                    <p class="text-cyan-300">
+                        时间: {{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                    </p>
+                    {% if record.duration > 0 %}
+                    <p class="text-gray-300 mt-1">
+                        持续时间: {{ record.formatted_duration }}秒
+                        <span class="ml-2 text-cyan-400/70">(自动抓拍)</span>
+                    </p>
+                    {% else %}
+                    <p class="text-gray-300 mt-1">
+                        手动截图
+                        <span class="ml-2 text-cyan-400/70">(手动操作)</span>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 分页导航 -->
+        {% if pagination.pages > 1 %}
+        <div class="mt-8 flex justify-center space-x-2 relative z-20">
+            {% if pagination.has_prev %}
+            <a href="{{ url_for('main.history', page=pagination.prev_num, type=capture_type, date_from=date_from.strftime('%Y-%m-%d') if date_from else '', date_to=date_to.strftime('%Y-%m-%d') if date_to else '') }}"
+               class="px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 text-gray-100 rounded-lg transition-colors duration-200 cursor-pointer">
+                上一页
+            </a>
+            {% endif %}
+            
+            <span class="px-4 py-2 bg-cyan-600/30 text-gray-100 rounded-lg">
+                {{ pagination.page }} / {{ pagination.pages }}
+            </span>
+
+            {% if pagination.has_next %}
+            <a href="{{ url_for('main.history', page=pagination.next_num, type=capture_type, date_from=date_from.strftime('%Y-%m-%d') if date_from else '', date_to=date_to.strftime('%Y-%m-%d') if date_to else '') }}"
+               class="px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 text-gray-100 rounded-lg transition-colors duration-200 cursor-pointer">
+                下一页
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- 如果没有记录 -->
+        {% if not pagination.items %}
+        <div class="text-center py-12 relative z-10">
+            <p class="text-gray-400">暂无符合条件的记录</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 确认删除弹窗 -->
+<div id="deleteConfirmDialog" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div id="deleteDialogCard" class="glass-card rounded-lg p-6 border-glow relative transform scale-0 transition-all duration-300">
+        <div class="flex flex-col items-center">
+            <div class="w-16 h-16 mb-4 relative">
+                <!-- 警告图标 -->
+                <svg class="w-full h-full text-red-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-red-300 mb-2 neon-text">确认删除</h3>
+            <p class="text-gray-300 text-center mb-4" id="deleteConfirmMessage"></p>
+            <div class="flex gap-4">
+                <button onclick="executeDelete()" 
+                        class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 hover-glow">
+                    确认
+                </button>
+                <button onclick="closeDeleteDialog()" 
+                        class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200">
+                    取消
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加日期选择器的样式 -->
+<style>
+    /* 自定义日期选择器样式 */
+    input[type="date"] {
+        color-scheme: dark;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.5;
+    }
+
+    /* 确保所有交互元素可点击 */
+    .interactive-element {
+        position: relative;
+        z-index: 20;
+        cursor: pointer;
+    }
+
+    /* 防止图片遮挡其他元素 */
+    .glass-card img {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* 确保表单控件在最上层 */
+    select, input, button, a {
+        position: relative;
+        z-index: 20 !important;
+        pointer-events: auto !important;
+    }
+
+    /* 添加弹窗动画样式 */
+    .alert-show {
+        transform: scale(1) !important;
+        opacity: 1 !important;
+    }
+    
+    #deleteDialogCard {
+        opacity: 0;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    }
+    
+    #deleteDialogCard.alert-show {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    .backdrop-blur-sm {
+        backdrop-filter: blur(8px);
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let deleteType = null;
+let deleteId = null;
+
+function showDeleteDialog() {
+    const dialog = document.getElementById('deleteConfirmDialog');
+    const dialogCard = document.getElementById('deleteDialogCard');
+    
+    // 显示整个弹窗容器
+    dialog.classList.remove('hidden');
+    
+    // 短暂延迟后添加动画类
+    setTimeout(() => {
+        dialogCard.classList.add('alert-show');
+    }, 10);
+}
+
+function closeDeleteDialog() {
+    const dialog = document.getElementById('deleteConfirmDialog');
+    const dialogCard = document.getElementById('deleteDialogCard');
+    
+    // 移除动画类
+    dialogCard.classList.remove('alert-show');
+    
+    // 等待动画完成后隐藏整个弹窗
+    setTimeout(() => {
+        dialog.classList.add('hidden');
+        deleteType = null;
+        deleteId = null;
+    }, 300);
+}
+
+function confirmDelete(type, id = null) {
+    deleteType = type;
+    deleteId = id;
+    
+    let message;
+    switch(type) {
+        case 'today':
+            message = '确定要删除今天的所有记录吗？';
+            break;
+        case 'all':
+            message = '确定要删除所有历史记录吗？此操作不可恢复！';
+            break;
+        case 'single':
+            message = '确定要删除这条记录吗？';
+            break;
+        default:
+            message = '确定要执行删除操作吗？';
+    }
+    
+    document.getElementById('deleteConfirmMessage').textContent = message;
+    showDeleteDialog();
+}
+
+function deleteRecord(id) {
+    confirmDelete('single', id);
+}
+
+function executeDelete() {
+    if (!deleteType) return;
+    
+    fetch('/delete_records', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            type: deleteType,
+            id: deleteId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('网络响应错误');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // 先关闭弹窗
+            closeDeleteDialog();
+            // 短暂延迟后刷新页面
+            setTimeout(() => {
+                window.location.reload();
+            }, 300);
+        } else {
+            throw new Error(data.message || '删除失败');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('操作失败：' + error.message);
+        closeDeleteDialog();
+    });
+}
+
+// 添加点击遮罩层关闭弹窗的功能
+document.getElementById('deleteConfirmDialog').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteDialog();
+    }
+});
+
+// 添加 ESC 键关闭弹窗
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('deleteConfirmDialog').classList.contains('hidden')) {
+        closeDeleteDialog();
+    }
+});
+</script>
+{% endblock %} 
