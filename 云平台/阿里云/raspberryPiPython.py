@@ -2,26 +2,23 @@ import paho.mqtt.client as mqtt
 import json
 
 # MQTT服务器的连接参数
-mqtt_host = "a1sE2uDnUsF.iot-as-mqtt.cn-shanghai.aliyuncs.com"
+mqtt_host = "a1qcyPvyjkY.iot-as-mqtt.cn-shanghai.aliyuncs.com"
 port = 1883
-client_id = "a11kATWqNc2.STM32|securemode=2,signmethod=hmacsha256,timestamp=1735661355281|"
-username = "STM32&a11kATWqNc2"
-password = "67a5b4b504349ee46eb63e46802fbf0827bc79ac0a0e11d2225a1ed2f8c20435"
+client_id = "a1qcyPvyjkY.rasp|securemode=2,signmethod=hmacsha256,timestamp=1737867084347|"
+username = "rasp&a1qcyPvyjkY"
+password = "12f2d961dc708965751ee586f664f7a2ce4d50faebe9217f7afd7727b952d1bf"
 
 # 订阅和发布的topics (修正重复定义)
-subscribe_topic = "/sys/a11kATWqNc2/STM32/thing/service/property/set"
-publish_topic = "/sys/a11kATWqNc2/STM32/thing/event/property/post"
+subscribe_topic = "/sys/a1qcyPvyjkY/rasp/thing/service/property/set"
+publish_topic = "/sys/a1qcyPvyjkY/rasp/thing/event/property/post"
 
 # 要发布的数据
 payload = {
     "id": "1",
     "version": "1.0",
     "params": {
-        "temp": 26,
-        "humi": 26,
-        "Fan": 1,
-        "Mode": 0,
-        "Meiju": 1
+        "tem": 26,
+        "hum": 26
     }
 }
 
@@ -37,6 +34,11 @@ def on_connect(client, userdata, flags, rc):
 # 当收到从服务器发送的消息时调用的回调函数
 def on_message(client, userdata, msg):
     print(f"Topic: {msg.topic} Message: {str(msg.payload.decode('utf-8'))}")
+    # Topic: /sys/a1qcyPvyjkY/rasp/thing/service/property/set Message: {"method":"thing.service.property.set","id":"335650181","params":{"fan":1},"version":"1.0.0"}
+    # 解析消息
+    data = json.loads(msg.payload.decode('utf-8'))['params']
+    print(data)
+
 
 # 创建MQTT客户端实例
 client = mqtt.Client(client_id)
