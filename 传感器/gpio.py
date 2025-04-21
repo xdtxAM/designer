@@ -15,7 +15,7 @@ GAS_SENSOR_PIN = 18
 GPIO.setup(GAS_SENSOR_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 try:
-    print("xxx传感器已启动 (GPIO-{}). 按 CTRL+C 退出".format(GAS_SENSOR_PIN))
+    print("xxxx传感器已启动 (GPIO-{}). 按 CTRL+C 退出".format(GAS_SENSOR_PIN))
     
     # 简单循环读取传感器状态
     while True:
