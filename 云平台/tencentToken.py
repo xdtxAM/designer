@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: UTF-8 -*-11
+# -*- coding: UTF-8 -*-111
 import base64
 import hashlib
 import hmac
