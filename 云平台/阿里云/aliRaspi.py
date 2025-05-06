@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from main import main
 
-# MQTT配置
+# MQTT配置1
 mqtt_host = "a1DWH3V55C6.iot-as-mqtt.cn-shanghai.aliyuncs.com"
 port = 1883
 client_id = "a1DWH3V55C6.rasp|securemode=2,signmethod=hmacsha256,timestamp=1745768512115|"
