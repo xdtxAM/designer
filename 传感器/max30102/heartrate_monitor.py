@@ -7,7 +7,7 @@ import numpy as np
 
 class HeartRateMonitor(object):
     """
-    A class that encapsulates the max30102 device into a thread
+    A class that encapsulates the max30102 device into a thread1
     """
 
     LOOP_TIME = 0.01
