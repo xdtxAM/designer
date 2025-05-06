@@ -3,7 +3,7 @@ import board
 
 """
 树莓派
-使用 DHT11 传感器读取温湿度数据
+使用 DHT11 传感器读取温湿度数据1
 引脚连接：GPIO20
 """
 def read_dht11():
