@@ -10,4 +10,5 @@ ali.py 负责云平台上传，接受下发和处理串口屏发送逻辑
 
 sensor.py 负责处理传感器逻辑并存储 JSON
 
-![阿里云和传感器.drawio](.\img\阿里云和传感器.drawio.svg)
+
+![阿里云和传感器.drawio](./img/阿里云和传感器.drawio.svg)
